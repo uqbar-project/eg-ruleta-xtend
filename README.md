@@ -18,7 +18,7 @@ Muestra cómo testear con mocks y stubs cuando tenemos valores aleatorios o tene
 
 ## Dominio
 
-![diagrama-clases](./images/Ruleta-Diagrama-Clases.png)
+![diagrama-clases](./images/Ruleta-class-diagram.png)
 
 Estamos modelando las apuestas de ruletas de un casino, para lo cual tenemos estos objetos:
 
