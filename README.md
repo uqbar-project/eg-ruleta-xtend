@@ -1,7 +1,7 @@
 
 # Ejemplo de Testing con Stubs y Mocks - Ruleta
 
-[![Build Status](https://travis-ci.org/uqbar-project/eg-alumnos-xtend.svg?branch=master)](https://travis-ci.org/uqbar-project/eg-alumnos-xtend) [![Coverage Status](https://coveralls.io/repos/github/uqbar-project/eg-alumnos-xtend/badge.svg?branch=master)](https://coveralls.io/github/uqbar-project/eg-alumnos-xtend?branch=master)
+[![Build Status](https://travis-ci.org/uqbar-project/eg-ruleta-xtend.svg?branch=master)](https://travis-ci.org/uqbar-project/eg-ruleta-xtend) [![Coverage Status](https://coveralls.io/repos/github/uqbar-project/eg-ruleta-xtend/badge.svg?branch=master)](https://coveralls.io/github/uqbar-project/eg-ruleta-xtend?branch=master)
 
 
 ## Objetivo
