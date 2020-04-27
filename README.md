@@ -2,7 +2,7 @@
 # Ejemplo de Testing con Stubs y Mocks - Ruleta
 
 
-[![Build Status](https://travis-ci.com/uqbar-project/eg-ruleta-xtend.svg?branch=01-initial-flaky-tests)](https://travis-ci.com/uqbar-project/eg-ruleta-xtend) [![Coverage Status](https://coveralls.io/repos/github/uqbar-project/eg-ruleta-xtend/badge.svg?branch=master)](https://coveralls.io/github/uqbar-project/eg-ruleta-xtend?branch=01-initial-flaky-tests)
+[![Build Status](https://travis-ci.com/uqbar-project/eg-ruleta-xtend.svg?branch=02-stubbing-roulette)](https://travis-ci.com/uqbar-project/eg-ruleta-xtend) [![Coverage Status](https://coveralls.io/repos/github/uqbar-project/eg-ruleta-xtend/badge.svg?branch=master)](https://coveralls.io/github/uqbar-project/eg-ruleta-xtend?branch=02-stubbing-roulette)
 
 
 ## Objetivo
