@@ -12,6 +12,7 @@ Muestra cómo testear con mocks y stubs cuando tenemos valores aleatorios o tene
 ## Conceptos a ver
 
 * Testeo unitario
+* Flaky tests
 * Generación de stubs 
 * Generación de tests de expectativa mediante el uso de mocks que provee [Mockito](http://site.mockito.org/)
 
@@ -66,7 +67,7 @@ class Ruleta implements IRuleta {
 	}
 ```
 
-entonces hay una probabilidad (baja pero cierta) de que el test de verde. En los otros casos dará rojo, lo que se conoce como _flaky test_.
+entonces hay una probabilidad (baja pero cierta) de que el test de verde. En los otros casos dará rojo, lo que se conoce como [_flaky test_](https://hackernoon.com/flaky-tests-a-war-that-never-ends-9aa32fdef359).
 
 El test no es predecible, ni cumple la propiedad de idempotencia: no es posible garantizar el mismo resultado en 1.000 ejecuciones. Ok, veremos qué podemos hacer.
 
