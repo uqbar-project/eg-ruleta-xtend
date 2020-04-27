@@ -22,46 +22,40 @@ Recordemos el diagrama de clases:
 
 ![diagrama-clases](./images/Ruleta-Diagrama-Clases.png)
 
-Teníamos un **flaky test** ya que cada vez que configurábamos las apuestas ganadoras y perdedoras no teníamos control sobre el número que salía en la ruleta. Ahora lo que vamos a hacer es introducir un objeto Stub, que reemplazará a la ruleta real, devolviendo el número que nosotros queremos:
+Otra opción en lugar de definir un Stub propio es aprovechar el framework **Mockito** que nos provee una forma de construir un objeto stub sin necesidad de definir una clase concreta:
 
 ```xtend
-	def void init() {
-		...
-		casino = new Casino() => [
-			// utilizamos un stub de la ruleta
-			ruleta = new StubRuleta(apuestaGanadora.numeroApostado)
-			//
-			apostar(apuestaGanadora)
-			apostar(apuestaPerdedora)
-		]
-	}
-```
-
-El StubRuleta se implementa aceptando un valor ganador predeterminado, algo conveniente para que la apuesta perdedora siga siéndolo:
-
-```xtend
-class StubRuleta implements IRuleta {
-	int numeroGanador = 0
-
-	new(int numeroGanador) {
-		this.numeroGanador = numeroGanador
-	}
-
-	override girarNumero() {
-		// no hacemos nada
-	}
-	
-	override apuestaGanadora(Apuesta apuesta) {
-		apuesta.numeroApostado === this.numeroGanador
+class StubRuleta {
+	def static mockearRuleta(int numeroGanador) {
+		val ruleta = mock(IRuleta)
+		doNothing.when(ruleta).elegirNumero()
+		doAnswer([ invocation |
+			val apuesta = invocation.arguments.get(0) as Apuesta
+			return apuesta.numeroApostado === numeroGanador
+		]).when(ruleta).apuestaGanadora(any(Apuesta))
+		return ruleta
 	}
 }
 ```
 
-Y ahora nuestro test es predecible: la apuesta ganadora siempre es ganadora y la perdedora siempre es perdedora y cada vez que ejecutemos los tests siempre tendremos la misma respuesta. 
+Fíjense que
+
+- el método void que elige el número no hace nada
+- se "decora" la respuesta recibida tomando como parámetro la apuesta recibida en la invocación al método `apuestaGanadora`
+
+Configuramos en el test la ruleta:
+
+```xtend
+		casino = new Casino() => [
+			ruleta = mockearRuleta(apuestaGanadora.numeroApostado)
+			apostar(apuestaGanadora)
+```
+
+Y nuestro test sigue siendo predecible: la apuesta ganadora siempre es ganadora y la perdedora siempre es perdedora y cada vez que ejecutemos los tests siempre tendremos la misma respuesta. 
 
 ## Tests de estado
 
-Repasemos el test:
+El test no cambia, sigue siendo un test de estado:
 
 ```xtend
 def void apuestaGanadora() {
@@ -72,5 +66,3 @@ def void apuestaGanadora() {
 }
 ```
 
-El Arrange lo realizamos en el setup, el Act es cuando le pedimos al casino que gire la ruleta y nos devuelva las apuestas ganadora, y en los asserts estamos chequeando **el estado de nuestro sistema tras la acción efectuada**. No hay nada nuevo, pero en breve conoceremos otros tipos de tests que podemos hacer.
-    
