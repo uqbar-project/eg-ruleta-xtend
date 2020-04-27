@@ -18,57 +18,44 @@ Muestra cómo testear con mocks y stubs cuando tenemos valores aleatorios o tene
 
 ## Dominio
 
+Recordemos el diagrama de clases:
+
 ![diagrama-clases](./images/Ruleta-Diagrama-Clases.png)
 
-Estamos modelando las apuestas de ruletas de un casino, para lo cual tenemos estos objetos:
-
-- el **casino**, al que le pedimos que acepte las apuestas, y represente el giro de una ruleta, donde se determinan las apuestas ganadoras.
-- la **apuesta**, que es simplemente un _value object_, un objeto que representa la información de la apuesta, consistente en el número apostado y el mail de la persona que apostó.
-- y la **ruleta**, tiene la misión de determinar el siguiente número ganador (en base a la suerte y verdad) y decir si una apuesta fue ganadora o no.
-
-## Flaky tests
-
-Por el momento implementamos un único test, en el que configuramos una apuesta que consideramos ganadora y otra perdedora:
+Teníamos un **flaky test** ya que cada vez que configurábamos las apuestas ganadoras y perdedoras no teníamos control sobre el número que salía en la ruleta. Ahora lo que vamos a hacer es introducir un objeto Stub, que reemplazará a la ruleta real, devolviendo el número que nosotros queremos:
 
 ```xtend
 	def void init() {
-		apuestaPerdedora = new Apuesta() => [
-			numeroApostado = 2
-			casillaCorreo = "looser@roulette.com" 
-		]
-		apuestaGanadora = new Apuesta() => [
-			numeroApostado = 5
-			casillaCorreo = "winner@roulette.com" 
-		]
+		...
 		casino = new Casino() => [
+			// utilizamos un stub de la ruleta
+			ruleta = new StubRuleta(apuestaGanadora.numeroApostado)
+			//
 			apostar(apuestaGanadora)
 			apostar(apuestaPerdedora)
 		]
 	}
 ```
 
-Luego, el test le pide al casino que simule el giro de una ruleta y pide que la apuesta ganadora esté en la lista de ganadores y que la perdedora no aparezca:
+El StubRuleta se implementa aceptando un valor ganador predeterminado, algo conveniente para que la apuesta perdedora siga siéndolo:
 
 ```xtend
-	def void apuestaGanadora() {
-		val ganadoras = casino.realizarRondaApuestasRuleta()
-		assertTrue(ganadoras.contains(apuestaGanadora))
-		assertFalse(ganadoras.contains(apuestaPerdedora))
+class StubRuleta implements IRuleta {
+	int numeroGanador = 0
+
+	new(int numeroGanador) {
+		this.numeroGanador = numeroGanador
 	}
+
+	override girarNumero() {
+		// no hacemos nada
+	}
+	
+	override apuestaGanadora(Apuesta apuesta) {
+		apuesta.numeroApostado === this.numeroGanador
+	}
+}
 ```
 
-Claro, el problema es que la ruleta decide en base al azar:
+Y ahora nuestro test es predecible: la apuesta ganadora siempre es ganadora y la perdedora siempre es perdedora y cada vez que ejecutemos los tests siempre tendremos la misma respuesta. 
 
-```xtend
-class Ruleta implements IRuleta {
-	...
-	override void girarNumero() {
-		this.numeroGanador = (Math.random * 36).intValue
-	}
-```
-
-entonces hay una probabilidad (baja pero cierta) de que el test de verde. En los otros casos dará rojo, lo que se conoce como [_flaky test_](https://hackernoon.com/flaky-tests-a-war-that-never-ends-9aa32fdef359).
-
-El test no es predecible, ni cumple la propiedad de idempotencia: no es posible garantizar el mismo resultado en 1.000 ejecuciones. Ok, veremos qué podemos hacer.
-
- 

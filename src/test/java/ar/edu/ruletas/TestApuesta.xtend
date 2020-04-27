@@ -25,6 +25,7 @@ class TestApuesta {
 			casillaCorreo = "winner@roulette.com" 
 		]
 		casino = new Casino() => [
+			ruleta = new StubRuleta(apuestaGanadora.numeroApostado)
 			apostar(apuestaGanadora)
 			apostar(apuestaPerdedora)
 		]
