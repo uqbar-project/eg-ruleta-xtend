@@ -59,3 +59,18 @@ class StubRuleta implements IRuleta {
 
 Y ahora nuestro test es predecible: la apuesta ganadora siempre es ganadora y la perdedora siempre es perdedora y cada vez que ejecutemos los tests siempre tendremos la misma respuesta. 
 
+## Tests de estado
+
+Repasemos el test:
+
+```xtend
+def void apuestaGanadora() {
+	val ganadoras = casino.realizarRondaApuestasRuleta()
+
+	assertTrue(ganadoras.contains(apuestaGanadora))
+	assertFalse(ganadoras.contains(apuestaPerdedora))
+}
+```
+
+El Arrange lo realizamos en el setup, el Act es cuando le pedimos al casino que gire la ruleta y nos devuelva las apuestas ganadora, y en los asserts estamos chequeando **el estado de nuestro sistema tras la acción efectuada**. No hay nada nuevo, pero en breve conoceremos otros tipos de tests que podemos hacer.
+    

@@ -13,7 +13,7 @@ class Casino {
 	}
 
 	def List<Apuesta> realizarRondaApuestasRuleta() {
-		ruleta.girarNumero()
+		ruleta.elegirNumero()
 		
 		apuestas
 			.filter [ apuesta | ruleta.apuestaGanadora(apuesta) ]

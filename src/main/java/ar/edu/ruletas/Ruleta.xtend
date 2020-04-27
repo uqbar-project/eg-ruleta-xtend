@@ -3,7 +3,7 @@ package ar.edu.ruletas
 import org.eclipse.xtend.lib.annotations.Accessors
 
 interface IRuleta {
-	def void girarNumero()
+	def void elegirNumero()
 	def boolean apuestaGanadora(Apuesta apuesta)
 }
 
@@ -11,7 +11,7 @@ interface IRuleta {
 class Ruleta implements IRuleta {
 	Integer numeroGanador
 
-	override void girarNumero() {
+	override void elegirNumero() {
 		this.numeroGanador = (Math.random * 36).intValue
 	}
 

@@ -1,17 +1,16 @@
 package ar.edu.ruletas
 
-class StubRuleta implements IRuleta {
-	int numeroGanador = 0
+import static org.mockito.Mockito.*
 
-	new(int numeroGanador) {
-		this.numeroGanador = numeroGanador
-	}
-
-	override girarNumero() {
-		// no hacemos nada
-	}
+class StubRuleta {
 	
-	override apuestaGanadora(Apuesta apuesta) {
-		apuesta.numeroApostado === this.numeroGanador
+	def static mockearRuleta(int numeroGanador) {
+		val ruleta = mock(IRuleta)
+		doNothing.when(ruleta).elegirNumero()
+		doAnswer([ invocation |
+			val apuesta = invocation.arguments.get(0) as Apuesta
+			return apuesta.numeroApostado === numeroGanador
+		]).when(ruleta).apuestaGanadora(any(Apuesta))
+		return ruleta
 	}
 }

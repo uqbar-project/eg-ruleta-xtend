@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test
 
 import static org.junit.jupiter.api.Assertions.assertFalse
 import static org.junit.jupiter.api.Assertions.assertTrue
+import static ar.edu.ruletas.StubRuleta.*
 
 @DisplayName("Tests de apuesta")
 class TestApuesta {
@@ -25,7 +26,7 @@ class TestApuesta {
 			casillaCorreo = "winner@roulette.com" 
 		]
 		casino = new Casino() => [
-			ruleta = new StubRuleta(apuestaGanadora.numeroApostado)
+			ruleta = mockearRuleta(apuestaGanadora.numeroApostado)
 			apostar(apuestaGanadora)
 			apostar(apuestaPerdedora)
 		]
