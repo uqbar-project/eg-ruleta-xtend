@@ -18,11 +18,9 @@ Muestra cómo testear con mocks y stubs cuando tenemos valores aleatorios o tene
 
 ## Dominio
 
-Recordemos el diagrama de clases:
-
-![diagrama-clases](./images/Ruleta-class-diagram.png)
-
 Teníamos un **flaky test** ya que cada vez que configurábamos las apuestas ganadoras y perdedoras no teníamos control sobre el número que salía en la ruleta. Ahora lo que vamos a hacer es introducir un objeto Stub, que reemplazará a la ruleta real, devolviendo el número que nosotros queremos:
+
+![diagrama-clases](./images/Ruleta-02 stubbing-roulette-class-diagram.png)
 
 ```xtend
 	def void init() {
