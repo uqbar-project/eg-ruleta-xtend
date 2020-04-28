@@ -16,6 +16,7 @@ class TestApuesta {
 
 	@BeforeEach
 	def void init() {
+		// arrange
 		apuestaPerdedora = new Apuesta() => [
 			numeroApostado = 2
 			casillaCorreo = "looser@roulette.com" 
@@ -37,7 +38,10 @@ class TestApuesta {
 	@Test
 	@DisplayName("cuando el apostador acierta la apuesta es ganadora")
 	def void apuestaGanadora() {
+		// act
 		val ganadoras = casino.realizarRondaApuestasRuleta()
+		
+		// assert
 		assertTrue(ganadoras.contains(apuestaGanadora))
 		assertFalse(ganadoras.contains(apuestaPerdedora))
 	}
