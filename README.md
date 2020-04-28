@@ -18,10 +18,6 @@ Muestra cómo testear con mocks y stubs cuando tenemos valores aleatorios o tene
 
 ## Dominio
 
-Recordemos el diagrama de clases:
-
-![diagrama-clases](./images/Ruleta-Diagrama-Clases.png)
-
 Otra opción en lugar de definir un Stub propio es aprovechar el framework **Mockito** que nos provee una forma de construir un objeto stub sin necesidad de definir una clase concreta:
 
 ```xtend
@@ -42,6 +38,8 @@ Fíjense que
 
 - el método void que elige el número no hace nada
 - se "decora" la respuesta recibida tomando como parámetro la apuesta recibida en la invocación al método `apuestaGanadora`
+
+![diagrama-clases](./images/Ruleta-03 stubbing-roulette-mockito.png)
 
 Configuramos en el test la ruleta:
 
