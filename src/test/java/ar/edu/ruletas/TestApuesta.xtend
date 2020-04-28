@@ -4,9 +4,8 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
-import static org.junit.jupiter.api.Assertions.assertFalse
-import static org.junit.jupiter.api.Assertions.assertTrue
 import static ar.edu.ruletas.StubRuleta.*
+import static org.mockito.Mockito.*
 
 @DisplayName("Tests de apuesta")
 class TestApuesta {
@@ -14,6 +13,7 @@ class TestApuesta {
 	Apuesta apuestaGanadora
 	Apuesta apuestaPerdedora
 	Casino casino
+	IMailSender mockedMailSender
 
 	@BeforeEach
 	def void init() {
@@ -25,7 +25,11 @@ class TestApuesta {
 			numeroApostado = 5
 			casillaCorreo = "winner@roulette.com" 
 		]
+		mockedMailSender = mock(IMailSender)
 		casino = new Casino() => [
+			//
+			mailSender = mockedMailSender
+			//
 			ruleta = mockearRuleta(apuestaGanadora.numeroApostado)
 			apostar(apuestaGanadora)
 			apostar(apuestaPerdedora)
@@ -37,11 +41,17 @@ class TestApuesta {
 	 */
 
 	@Test
-	@DisplayName("cuando el apostador acierta la apuesta es ganadora")
+	@DisplayName("cuando el apostador acierta la apuesta es ganadora y el casino le envía un mail")
 	def void apuestaGanadora() {
-		val ganadoras = casino.realizarRondaApuestasRuleta()
-		assertTrue(ganadoras.contains(apuestaGanadora))
-		assertFalse(ganadoras.contains(apuestaPerdedora))
+		casino.realizarRondaApuestasRuleta()
+		
+		// Test de comportamiento, le tiene que haber llegado un mail
+		verify(mockedMailSender, times(1))
+			.sendMail(new Mail(apuestaGanadora.casillaCorreo, "Ganaste!"))
+			
+		verify(mockedMailSender, never)
+			.sendMail(new Mail(apuestaPerdedora.casillaCorreo, "Ganaste!"))
+
 	}
 
 }

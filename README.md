@@ -18,49 +18,85 @@ Muestra cómo testear con mocks y stubs cuando tenemos valores aleatorios o tene
 
 ## Dominio
 
-Otra opción en lugar de definir un Stub propio es aprovechar el framework **Mockito** que nos provee una forma de construir un objeto stub sin necesidad de definir una clase concreta:
+Agregamos un requerimiento nuevo: cada vez que alguien gana a la ruleta nos interesa enviar un mail a cada ganador, con el asunto "Ganaste!".
+
+Esto requiere que tengamos nuevos objetos:
+
+- uno que representa un mail, es un _value object_ (solo agrupa la información, es difícil que podamos encontrarle comportamiento).
 
 ```xtend
-class StubRuleta {
-	def static mockearRuleta(int numeroGanador) {
-		val ruleta = mock(IRuleta)
-		doNothing.when(ruleta).elegirNumero()
-		doAnswer([ invocation |
-			val apuesta = invocation.arguments.get(0) as Apuesta
-			return apuesta.numeroApostado === numeroGanador
-		]).when(ruleta).apuestaGanadora(any(Apuesta))
-		return ruleta
-	}
+@Data
+class Mail {
+	String to
+	String subject
 }
 ```
 
-Fíjense que
-
-- el método void que elige el número no hace nada
-- se "decora" la respuesta recibida tomando como parámetro la apuesta recibida en la invocación al método `apuestaGanadora`
-
-![diagrama-clases](./images/Ruleta-03 stubbing-roulette-mockito.png)
-
-Configuramos en el test la ruleta:
+- otro que nos permite enviar un mail, no tiene aún implementación, sirve solamente como cáscara para testear.
 
 ```xtend
-		casino = new Casino() => [
-			ruleta = mockearRuleta(apuestaGanadora.numeroApostado)
-			apostar(apuestaGanadora)
+interface IMailSender {
+	def void sendMail(Mail mail)
+}
 ```
 
-Y nuestro test sigue siendo predecible: la apuesta ganadora siempre es ganadora y la perdedora siempre es perdedora y cada vez que ejecutemos los tests siempre tendremos la misma respuesta. 
+Además, el método principal de Casino que hace girar la ruleta y determina las apuestas ganadoras, solo va a enviarles el mail (el método pasa a ser `void`):
 
-## Tests de estado
+```xtend
+def void realizarRondaApuestasRuleta() {
+	ruleta.elegirNumero()
+	
+	apuestas
+		.filter [ apuesta | ruleta.apuestaGanadora(apuesta) ]
+		.toList
+		.forEach [ apuesta | mailSender.sendMail(new Mail(apuesta.casillaCorreo, "Ganaste!")) ]
+}
+```
 
-El test no cambia, sigue siendo un test de estado:
+## Stubs y mocks
+
+En este branch seguimos construyendo una ruleta a partir de **Mockito** que nos provee una forma de construir un objeto stub sin necesidad de definir una clase concreta. 
+
+Ahora necesitamos también generar un _mock_ para el objeto que envía mails, ya que no tenemos ninguna implementación posible, y en el caso que la tuviéramos, no queremos mandar mails cada vez que ejecutemos los tests. Esto lo podemos hacer directamente en la clase que testea la apuesta ganadora:
+
+```xtend
+class TestApuesta {
+	...
+	IMailSender mockedMailSender
+
+	@BeforeEach
+	def void init() {
+		...
+		mockedMailSender = mock(IMailSender)
+		casino = new Casino() => [
+			//
+			mailSender = mockedMailSender
+			//
+```
+
+![diagrama-clases](./images/Ruleta-04-class-diagram.png)
+
+## Tests de comportamiento
+
+Si el método principal `realizarRondaApuestasRuleta` es ahora void, ¿cómo podemos verificar que funciona correctamente? El _mock_ del objeto IMailSender nos va a servir para este propósito, y dijimos _mock_ y no _stub_ porque nuestros tests no van a verificar el estado final del sistema, sino la interacción de mensajes que se produce durante la fase *A*ct del test: 
 
 ```xtend
 def void apuestaGanadora() {
+	// Act
 	val ganadoras = casino.realizarRondaApuestasRuleta()
 
-	assertTrue(ganadoras.contains(apuestaGanadora))
-	assertFalse(ganadoras.contains(apuestaPerdedora))
+	// Asserts
+	verify(mockedMailSender, times(1))
+		.sendMail(new Mail(apuestaGanadora.casillaCorreo, "Ganaste!"))
+		
+	verify(mockedMailSender, never)
+		.sendMail(new Mail(apuestaPerdedora.casillaCorreo, "Ganaste!"))
 }
 ```
 
+Lo que estamos verificando es que luego de ejecutar la ronda de apuestas de la ruleta:
+
+- se envió **exactamente 1 (un)** mensaje sendMail al objeto que mockea la interfaz IMailSender, con la casilla de correo de la apuesta ganadora y con el asunto "Ganaste!"
+- y además testeamos que **nunca** se envió un mensaje sendMail con la casilla de correo de la apuesta perdedora.
+
+De esta manera, estamos controlando la aleatoriedad de los números que salen (mock de la ruleta) y comprobamos que se envían mails a las personas correctas (mock de mail sender), generando resultados predecibles y logrando que nuestros tests sean idempotentes.

@@ -7,16 +7,18 @@ import org.eclipse.xtend.lib.annotations.Accessors
 class Casino {
 	IRuleta ruleta = new Ruleta
 	List<Apuesta> apuestas = newArrayList
+	IMailSender mailSender
 	
 	def apostar(Apuesta apuesta) {
 		apuestas.add(apuesta)
 	}
 
-	def List<Apuesta> realizarRondaApuestasRuleta() {
+	def void realizarRondaApuestasRuleta() {
 		ruleta.elegirNumero()
 		
 		apuestas
 			.filter [ apuesta | ruleta.apuestaGanadora(apuesta) ]
 			.toList
+			.forEach [ apuesta | mailSender.sendMail(new Mail(apuesta.casillaCorreo, "Ganaste!")) ]
 	}
 }
