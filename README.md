@@ -1,9 +1,6 @@
 
 # Ejemplo de Testing con Stubs y Mocks - Ruleta
 
-[![Build Status](https://travis-ci.org/uqbar-project/eg-ruleta-xtend.svg?branch=master)](https://travis-ci.org/uqbar-project/eg-ruleta-xtend) [![Coverage Status](https://coveralls.io/repos/github/uqbar-project/eg-ruleta-xtend/badge.svg?branch=master)](https://coveralls.io/github/uqbar-project/eg-ruleta-xtend?branch=master)
-
-
 ## Objetivo
 
 Muestra cómo testear con mocks y stubs cuando tenemos valores aleatorios o tenemos que evitar que manden mails cada vez que ejecutamos los tests.
@@ -14,10 +11,17 @@ Muestra cómo testear con mocks y stubs cuando tenemos valores aleatorios o tene
 * Generación de stubs 
 * Generación de tests de expectativa mediante el uso de mocks que provee [Mockito](http://site.mockito.org/)
 
+## Branches
 
-## Dominio
+Cada branch tiene una introducción y una explicación detallada.
 
-## Tests de estado
+- `01-initial-flaky-tests`: los tests son _flaky_. Fallan (casi siempre) porque la ruleta devuelve números en forma aleatoria, y no es posible repetir las apuestas ganadoras.
+- `02-stubbing-roulette`: arreglamos los _flaky tests_ implementando un _stub_ manual que permite configurar el número ganador de la ruleta virtual.
+- `03-stubbing-roulette-mockito`: el mismo _stub_ del branch 02 pero implementado con el framework Mockito. Tanto este branch como el anterior muestran tests de estado.
+- `04-mock-tests`: usamos un _mock_ con Mockito que simula el envío de mails para mostrar cómo es un test de comportamiento.
 
-## Tests de comportamiento
 
+## Material adicional
+
+- [Video explicativo](https://www.youtube.com/watch?v=V5D43EcZkQ0)
+- [Diapositivas](https://docs.google.com/presentation/d/1hyY1zyKUrs1qlrMuN_KuagVCmOzjv_XpPsXI7RLnSHk/edit#slide=id.p)
