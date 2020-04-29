@@ -37,12 +37,13 @@ class TestApuesta {
 	}
 
 	/**
-	 * Test de Stub: estado
+	 * Test de Stub: comportamiento
 	 */
 
 	@Test
 	@DisplayName("cuando el apostador acierta la apuesta es ganadora y el casino le envía un mail")
 	def void apuestaGanadora() {
+		// act
 		casino.realizarRondaApuestasRuleta()
 		
 		// Test de comportamiento, le tiene que haber llegado un mail
