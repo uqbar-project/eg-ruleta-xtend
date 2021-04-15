@@ -25,6 +25,7 @@ class TestApuesta {
 			casillaCorreo = "winner@roulette.com" 
 		]
 		casino = new Casino() => [
+			ruleta = new StubRuleta(5)
 			apostar(apuestaGanadora)
 			apostar(apuestaPerdedora)
 		]
@@ -33,7 +34,6 @@ class TestApuesta {
 	/**
 	 * Test de Stub: estado
 	 */
-
 	@Test
 	@DisplayName("cuando el apostador acierta la apuesta es ganadora")
 	def void apuestaGanadora() {

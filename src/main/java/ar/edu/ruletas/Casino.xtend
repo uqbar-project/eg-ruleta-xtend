@@ -18,12 +18,12 @@ class Casino {
 	}
 
 	def List<Apuesta> realizarRondaApuestasRuleta() {
-		ruleta.girarNumero()
+		ruleta.elegirNumero()
 		
 		val ganadoras = apuestas
 			.filter [ apuesta | ruleta.apuestaGanadora(apuesta) ]
 			.toList
-			
+
 		// Enviamos mail si está activado
 		if (envioMails) {
 			ganadoras.forEach [ unaApuesta |

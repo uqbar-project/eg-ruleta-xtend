@@ -1,13 +1,13 @@
 package ar.edu.ruletas
 
-class StubHelpers implements IRuleta {
+class StubRuleta implements IRuleta {
 	int numeroGanador = 0
 
 	new(int numeroGanador) {
 		this.numeroGanador = numeroGanador
 	}
 
-	override girarNumero() {
+	override elegirNumero() {
 		// no hacemos nada
 	}
 	
