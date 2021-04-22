@@ -37,7 +37,7 @@ class TestApuesta {
 	}
 
 	/**
-	 * Test de Stub: comportamiento
+	 * Test de Mock: comportamiento
 	 */
 
 	@Test
